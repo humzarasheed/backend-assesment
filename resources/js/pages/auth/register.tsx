@@ -8,20 +8,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { Field, Radio, RadioGroup } from '@headlessui/react';
+import { Role } from '@/types';
 
 type RegisterForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
+    role: number;
 };
 
-export default function Register() {
+export default function Register({ roles }: { roles: Role[] }) {
+
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        role: 0
     });
 
     const submit: FormEventHandler = (e) => {
@@ -29,6 +34,10 @@ export default function Register() {
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
+    };
+
+    const handleRoleChange = (value: number) => {
+        setData('role', value);
     };
 
     return (
@@ -99,6 +108,24 @@ export default function Register() {
                             placeholder="Confirm password"
                         />
                         <InputError message={errors.password_confirmation} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="password_confirmation">Role</Label>
+                        <RadioGroup value={data.role} onChange={handleRoleChange} aria-label="Server size" className="flex">
+                            {roles.map((role) => (
+                                <Field key={role.id} className="flex items-center gap-2">
+                                <Radio
+                                    value={role.id}
+                                    className="group flex size-5 items-center justify-center rounded-full border bg-white data-[checked]:bg-blue-400"
+                                >
+                                    <span className="invisible size-2 rounded-full bg-white group-data-[checked]:visible" />
+                                </Radio>
+                                <Label className='capitalize font-normal mx-2'>{role.name}</Label>
+                                </Field>
+                            ))}
+                            </RadioGroup>
+                        <InputError message={errors.role} />
                     </div>
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
