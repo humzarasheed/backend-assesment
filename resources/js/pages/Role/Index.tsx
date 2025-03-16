@@ -2,20 +2,11 @@ import { buttonVariants } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type Role } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Edit } from 'lucide-react';
 import moment from 'moment';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
 
 export default function Index({ roles }: { roles: Role[] }) {
-    const { flash } = usePage<{ flash: { message?: string } }>().props;
-
-    useEffect(() => {
-        if (flash && flash.message) {
-            toast(flash.message);
-        }
-    }, [flash]);
 
     return (
         <AppLayout>

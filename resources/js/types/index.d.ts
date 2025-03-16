@@ -1,3 +1,4 @@
+import { Section } from '@/types';
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
@@ -53,4 +54,22 @@ export interface Role {
 export interface Permission {
     id: number;
     name: string;
+}
+
+export interface Book {
+    id: number;
+    name: string;
+    author: User;
+    is_published: boolean;
+}
+
+export interface Section {
+    id: number;
+    title: string;
+    description: string;
+    book: Book;
+    user: User;
+    updated_by: User;
+    updated_at: string;
+    subsections: Section[];
 }

@@ -5,28 +5,14 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, UserIcon } from 'lucide-react';
+import { BookIcon, BookOpen, Folder, LayoutGrid, Menu, Search, UserIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Roles',
-        href: '/role',
-        icon: UserIcon,
-    },
-];
 
 const rightNavItems: NavItem[] = [
     {
@@ -51,6 +37,29 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const getInitials = useInitials();
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+        ...(auth.isAuthor
+            ? [
+                {
+                    title: 'Roles',
+                    href: '/role',
+                    icon: UserIcon,
+                },
+            ]
+        : []),
+        {
+            title: 'Books',
+            href: '/book',
+            icon: BookIcon,
+        },
+    ];
+
     return (
         <>
             <div className="border-sidebar-border/80 border-b">

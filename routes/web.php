@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\CollaboratorController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -14,6 +17,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::resource('role', RoleController::class)->middleware('role:author');
+    Route::resource('book', BookController::class);
+    Route::resource('section', SectionController::class);
+    Route::resource('collaborator', CollaboratorController::class);
 });
 
 require __DIR__.'/settings.php';
