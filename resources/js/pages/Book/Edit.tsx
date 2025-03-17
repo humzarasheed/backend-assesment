@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { usePermission } from '@/hooks/user-permission';
 import AppLayout from '@/layouts/app-layout';
 import { Book, Section, User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
@@ -25,6 +26,7 @@ type EditFormProps = {
 };
 
 export default function Edit({ book, users, collaborators, sections }: EditFormProps) {
+    const { can, isAuthor } = usePermission();
     const bookName = useRef<HTMLInputElement>(null);
 
     const { data, setData, errors, put, reset, processing } = useForm<Required<EditBookForm>>({
@@ -82,13 +84,13 @@ export default function Edit({ book, users, collaborators, sections }: EditFormP
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <Button disabled={processing}>Update Book</Button>
+                                <Button disabled={processing || !can('edit_book')}>Update Book</Button>
                             </div>
                         </form>
                     </CardContent>
                 </Card>
 
-                <CollaboratorList collaborators={collaborators} users={users} bookId={book.id} />
+                {isAuthor() && <CollaboratorList collaborators={collaborators} users={users} bookId={book.id} />}
 
                 <SectionsList sections={sections} bookId={book.id} />
             </div>

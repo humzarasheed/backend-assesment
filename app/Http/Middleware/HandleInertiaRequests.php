@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'isAuthor' => $request->user() ? $request->user()->hasRole(RoleEnum::AUTHOR) : null,
+                'permissions' => $request->user() ? $request->user()->getAllPermissions()->pluck('name') : [],
             ],
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),

@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePermission } from '@/hooks/user-permission';
 import { Section } from '@/types';
 import { router } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
@@ -14,6 +15,7 @@ type SectionsListProps = {
 };
 
 export default function SectionsList({ sections, bookId }: SectionsListProps) {
+    const { can } = usePermission();
     const [bookSections, setBookSections] = useState<Section[]>(sections);
     const [editingSection, setEditingSection] = useState<Section | null>(null);
     const [addingSectionTo, setAddingSectionTo] = useState<string | null>(null);
@@ -70,15 +72,17 @@ export default function SectionsList({ sections, bookId }: SectionsListProps) {
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Book Sections</CardTitle>
-                <Button
-                    onClick={() => {
-                        setEditingSection(null);
-                        setAddingSectionTo('');
-                    }}
-                    className="flex gap-1"
-                >
-                    <Plus className="h-4 w-4" /> Add Section
-                </Button>
+                {can('create_section') && (
+                    <Button
+                        onClick={() => {
+                            setEditingSection(null);
+                            setAddingSectionTo('');
+                        }}
+                        className="flex gap-1"
+                    >
+                        <Plus className="h-4 w-4" /> Add Section
+                    </Button>
+                )}
             </CardHeader>
             <CardContent>
                 {(editingSection || addingSectionTo !== null) && (

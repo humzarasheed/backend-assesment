@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { usePermission } from '@/hooks/user-permission';
 import { Section } from '@/types';
 import { BookOpen, Calendar, ChevronDown, ChevronRight, Edit, PlusCircle, User, X } from 'lucide-react';
 import { useState } from 'react';
@@ -14,6 +15,7 @@ type SectionItemProps = {
 };
 
 export default function SectionItem({ section, onDelete, onAdd, onEdit, depth = 0 }: SectionItemProps) {
+    const { can } = usePermission();
     const [isOpen, setIsOpen] = useState(false);
     const hasSubsections = section.subsections && section.subsections.length > 0;
 
@@ -52,17 +54,23 @@ export default function SectionItem({ section, onDelete, onAdd, onEdit, depth = 
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline" onClick={() => onEdit(section)}>
-                                <Edit className="mr-1 h-4 w-4" />
-                                Edit
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => onAdd(section.id)}>
-                                <PlusCircle className="mr-1 h-4 w-4" />
-                                Add Subsection
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => onDelete(section.id)}>
-                                <X className="h-4 w-4" />
-                            </Button>
+                            {can('edit_section') && (
+                                <Button size="sm" variant="outline" onClick={() => onEdit(section)}>
+                                    <Edit className="mr-1 h-4 w-4" />
+                                    Edit
+                                </Button>
+                            )}
+                            {can('create_section') && (
+                                <Button size="sm" variant="outline" onClick={() => onAdd(section.id)}>
+                                    <PlusCircle className="mr-1 h-4 w-4" />
+                                    Add Subsection
+                                </Button>
+                            )}
+                            {can('delete_section') && (
+                                <Button size="sm" variant="ghost" onClick={() => onDelete(section.id)}>
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </CardHeader>

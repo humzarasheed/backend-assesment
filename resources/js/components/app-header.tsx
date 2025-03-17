@@ -40,9 +40,9 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
     const mainNavItems: NavItem[] = [
         {
-            title: 'Dashboard',
+            title: 'Books',
             href: '/dashboard',
-            icon: LayoutGrid,
+            icon: BookIcon,
         },
         ...(auth.isAuthor
             ? [
@@ -53,11 +53,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                 },
             ]
         : []),
-        {
-            title: 'Books',
-            href: '/book',
-            icon: BookIcon,
-        },
     ];
 
     return (
