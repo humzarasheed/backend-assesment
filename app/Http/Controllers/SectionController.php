@@ -7,6 +7,7 @@ use App\Models\Section;
 use App\Repositories\SectionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class SectionController extends Controller
 {
@@ -18,6 +19,10 @@ class SectionController extends Controller
     public function index(Request $request)
     {
         $bookId = $request->input('bookId');
+        if (! Gate::allows('viewAny', Section::class)) {
+            abort(403);
+        }
+
         $sections = $this->sectionRepo->getSectionsForBook($bookId);
 
         return response()->json([
@@ -38,12 +43,18 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
+        $bookId = request('book_id');
+
+        if (! Gate::allows('create', [Section::class, $bookId])) {
+            abort(403);
+        }
+
         if($request->validated()) {
             $request->merge(['user_id' => Auth::id()]);
             Section::create($request->all());
         }
 
-        $this->sectionRepo->clearSectionsCache($request->input('book_id'));
+        $this->sectionRepo->clearSectionsCache($bookId);
 
         return redirect()->back()->with('message', 'Section created successfully');
     }
@@ -69,6 +80,10 @@ class SectionController extends Controller
      */
     public function update(SectionRequest $request, Section $section)
     {
+        if (! Gate::allows('update', $section)) {
+            abort(403);
+        }
+
         if($request->validated()) {
             $request->merge(['updated_by' => Auth::id()]);
             $section->update($request->all());
@@ -84,6 +99,10 @@ class SectionController extends Controller
      */
     public function destroy(Section $section)
     {
+        if (! Gate::allows('delete', $section)) {
+            abort(403);
+        }
+
         $section->delete();
 
         $this->sectionRepo->clearSectionsCache($section->book_id);

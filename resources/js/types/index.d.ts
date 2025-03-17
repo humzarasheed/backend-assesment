@@ -67,6 +67,7 @@ export interface Section {
     id: number;
     title: string;
     description: string;
+    parent_id: number;
     book: Book;
     user: User;
     updated_by: User;

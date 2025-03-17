@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\User;
 use App\Repositories\SectionRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Response;
 
 class BookController extends Controller
@@ -17,6 +18,10 @@ class BookController extends Controller
      */
     public function index(): Response
     {
+        if (! Gate::allows('viewAny', Book::class)) {
+            abort(403);
+        }
+
         $books = Book::with('author')->get();
 
         return Inertia::render('Book/Index', [
@@ -29,6 +34,10 @@ class BookController extends Controller
      */
     public function create(): Response
     {
+        if (! Gate::allows('create', Book::class)) {
+            abort(403);
+        }
+
         return Inertia::render('Book/Create');
     }
 
@@ -37,6 +46,10 @@ class BookController extends Controller
      */
     public function store(BookRequest $request)
     {
+        if (! Gate::allows('create', Book::class)) {
+            abort(403);
+        }
+
         if($request->validated()) {
             $request->merge(['author_id' => Auth::id()]);
             Book::create($request->all());
@@ -58,6 +71,10 @@ class BookController extends Controller
      */
     public function edit(Book $book, SectionRepository $sectionRepo)
     {
+        if (! Gate::allows('edit', $book)) {
+            abort(403);
+        }
+
         return Inertia::render('Book/Edit', [
             'book' => $book,
             'users' => User::role('collaborator')->get(),
@@ -71,6 +88,10 @@ class BookController extends Controller
      */
     public function update(BookRequest $request, Book $book)
     {
+        if (! Gate::allows('update', $book)) {
+            abort(403);
+        }
+
         if($request->validated()) {
             $book->update($request->all());
         }
@@ -83,6 +104,10 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        if (! Gate::allows('delete', $book)) {
+            abort(403);
+        }
+
         $book->delete();
         return redirect()->back()->with('message', 'Book Deleted Successfully.');
     }

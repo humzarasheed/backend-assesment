@@ -4,12 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class Book extends Model
 {
     use SoftDeletes;
 
     protected $fillable = ['name', 'author_id', 'is_published'];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('accessible', function (Builder $query) {
+            $user = auth()->user();
+
+            if ($user->hasRole('author')) {
+                $query->where('author_id', $user->id);
+            } elseif ($user->hasRole('collaborator')) {
+                $query->whereHas('collaborators', function ($query) use ($user) {
+                    $query->where('collaborator_id', $user->id);
+                });
+            }
+        });
+    }
 
     public function author()
     {

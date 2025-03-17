@@ -11,18 +11,18 @@ import { toast } from 'sonner';
 
 type SectionFormProps = {
     section?: Section;
-    bookId: string;
+    bookId: number;
     parentId?: string | null;
     onCancel: () => void;
     onSuccess: () => void;
 };
 
-export default function SectionForm({ section, bookId, parentId = null, onCancel, onSuccess }: SectionFormProps) {
+export default function SectionForm({ section, bookId, onCancel, onSuccess }: SectionFormProps) {
     const { data, setData, errors, processing, post, put, reset } = useForm({
         title: section?.title || '',
         description: section?.description || '',
         book_id: bookId,
-        parent_id: parentId,
+        parent_id: section?.parent_id,
     });
 
     const handleSubmit: FormEventHandler = (e) => {
