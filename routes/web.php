@@ -12,7 +12,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', [BookController::class, 'index']);
+    Route::get('dashboard', [BookController::class, 'index'])->name('dashboard');
 
     Route::resource('role', RoleController::class)->middleware('role:author');
     Route::resource('book', BookController::class);
